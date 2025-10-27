@@ -2,21 +2,33 @@
 document.addEventListener("DOMContentLoaded", () => {
     const observer = new MutationObserver(() => {
         document.querySelectorAll("div.ms-1.flex-grow-1").forEach(container => {
-            if (!container.querySelector(".ai-analyze-btn")) {
+            if (!container.querySelector(".ai-analyze-container")) {
+                // Create container
+                const wrapper = document.createElement("div");
+                wrapper.className = "ai-analyze-container d-flex align-items-center";
+                wrapper.style.gap = "6px";
+
+                // Button
                 const btn = document.createElement("button");
                 btn.type = "button";
-                btn.className = "btn btn-sm btn-info ai-analyze-btn ml-2";
-                btn.innerHTML = "⭐ AI Scan"; // star + text
-                container.appendChild(btn);
+                btn.className = "btn btn-sm btn-info ai-analyze-btn";
+                btn.innerText = "Analyze AI";
+
+                // Append
+                wrapper.appendChild(btn);
+                container.appendChild(wrapper);
 
                 btn.addEventListener("click", async (ev) => {
                     ev.stopPropagation(); // prevent Odoo from closing the chat
                     ev.preventDefault();
 
+
                     // Grab all message bodies from this chatter
+                    const currentWindow = btn.closest(".o-mail-ChatWindow") || btn.closest(".o-mail-DiscussContent");
+                    const threadId = currentWindow.dataset.threadId; // numeric ID
+                    console.log(threadId);
                     const messages = Array.from(
-                        btn.closest(".o-mail-ChatWindow")
-                        .querySelectorAll(".o-mail-Message-body p")
+                        currentWindow.querySelectorAll(".o-mail-Message-body p")
                     )
                         .map(p => p.innerText.trim())
                         .filter(text => text.length > 0)
@@ -26,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     btn.disabled = true;
                     btn.innerText = "Scanning AI...";
-
+                    console.log(currentWindow);
                     try {
                         const response = await fetch("/ai_chatter/scan", {
                             method: "POST",
@@ -38,14 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
 
                         const data = await response.json();
-
+                        console.log("AI response:", data);
+                        const result = data.result || data;
                         // --- Create modal overlay ---
                         const modal = document.createElement("div");
                         modal.className = "ai-modal-overlay";
                         modal.innerHTML = `
                             <div class="ai-modal">
                                 <h4>AI Analysis</h4>
-                                <p><strong>Summary:</strong><br>${data.summary || "No summary"}</p>
+                                <p><strong>Urgency:</strong><br>${result.urgency}</p>
+                                <p><strong>Summary:</strong><br>${result.summary}</p>
+                                <p><strong>Recommended Action:</strong>
+                                <br>${result.recommendation}</p>
                                 <button class="btn btn-sm btn-primary ai-close">Close</button>
                             </div>
                         `;
@@ -56,25 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         modal.addEventListener("click", (e) => {
                             if (e.target === modal) modal.remove();
                         });
-
-                        // --- Insert text into composer ---
-                        // const chatWindow = btn.closest(".o-mail-ChatWindow");
-                        // const composer = chatWindow.querySelector(".o-mail-Composer-input");
-                        // const sendBtn = chatWindow.querySelector("button[name='send-message']");
-
-                        // if (composer && sendBtn) {
-                        //     // Set the text in the composer
-                        //     composer.value = "Hello AI suggestion";
-                        //     composer.dispatchEvent(new Event('input', { bubbles: true })); // trigger OWL reactivity
-
-                        //     // Trigger a proper OWL-compatible click
-                        //     const clickEvent = new MouseEvent('click', {
-                        //         view: window,
-                        //         bubbles: true,
-                        //         cancelable: true
-                        //     });
-                        //     sendBtn.dispatchEvent(clickEvent);
-                        // }
  
                     } catch (err) {
                         console.error(err);
