@@ -1,0 +1,5 @@
+<t t-extend="mail.ChatWindow">
+    <t t-jquery="div.d-flex.flex-shrink-0.me-1" t-operation="append">
+        <button type="button" class="btn btn-sm btn-info ai-analyze-btn ml-2">Analyze AI</button>
+    </t>
+</t>
