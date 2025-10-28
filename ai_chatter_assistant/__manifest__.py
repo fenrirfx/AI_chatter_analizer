@@ -31,7 +31,7 @@ Key points:
     },
     'images': [
         'static/description/icon.png',        # thumbnail
-        'static/description/banner.png',      # main banner (optional)
+        'static/description/cover.png',      # main banner (optional)
         'static/description/screenshot_01.png',
         'static/description/screenshot_02.png',
         'static/description/screenshot_03.png',
