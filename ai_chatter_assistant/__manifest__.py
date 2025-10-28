@@ -32,9 +32,9 @@ Key points:
     'icon': 'static/description/icon.png',
     'images': [
         'static/description/cover.png',      # main banner (optional)
-        'static/description/Screenshot_01.png',
-        'static/description/Screenshot_02.png',
-        'static/description/Screenshot_03.png',
+        'static/description/screenshot_01.png',
+        'static/description/screenshot_02.png',
+        'static/description/screenshot_03.png',
     ],
     'installable': True,
     'application': True,
