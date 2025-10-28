@@ -29,8 +29,8 @@ Key points:
             'ai_chatter_assistant/static/src/js/ai_chatter_button.js',
         ],
     },
+    'icon': 'static/description/icon.png',
     'images': [
-        'static/description/icon.png',        # thumbnail
         'static/description/cover.png',      # main banner (optional)
         'static/description/screenshot_01.png',
         'static/description/screenshot_02.png',
